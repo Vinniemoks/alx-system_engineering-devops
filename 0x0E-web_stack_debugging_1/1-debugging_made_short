@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#The Script that sets the port 80 and give the feedback of ngix not running fr!
-sed -i "s/8080/80/g" /etc/nginx/sites-enabled/default
-service nginx restart
-kill -9 "$(cat /run/nginx.pid)"
+# This script configures Nginx to listen on port 80 of all active IPv4 IPs
+sed -i 's/listen 80;/listen 80 default_server;/g' /etc/nginx/sites-available/default
+nginx -s reload
