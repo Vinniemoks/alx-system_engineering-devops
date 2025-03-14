@@ -33,19 +33,19 @@ defaults
         errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
-frontend mokuavinnie-frontend
+frontend mokuavinnie-tech-frontend
         bind *:80
         mode http
         http-request redirect scheme https code 301 unless { ssl_fc }
         http-request set-header X_Forwarded-Proto http
-        default_backend mokuavinnie-backend
+        default_backend mokuavinnie-tech-backend
 
-frontend mokuavinnie-frontend-https
+frontend mokuavinnie-tech-frontend
         bind *:443 ssl crt /etc/haproxy/certs/www.mokuavinnie.tech.pem
         http-request set-header X-Forwarded-Proto https
-        default_backend mokuavinnie-backend
+        default_backend mokuavinnie-tech-backend
 
-backend mokuavinnie-backend
+backend mokuavinnie-tech-backend
         balance roundrobin
-        server 83945-web-01 35.174.213.184:80 check
-        server 83945-web-02 100.25.170.47:80 check
+        server 83945-web-01 52.90.32.220:80 check
+        server 83945-web-02 98.82.13.75:80 check

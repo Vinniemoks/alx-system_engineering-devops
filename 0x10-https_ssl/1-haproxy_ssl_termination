@@ -18,23 +18,23 @@ defaults
     option  forwardfor
     option  http-server-close
 
-frontend www-http
+frontend mokuavinnie-tech-frontend
     bind   0.0.0.0:80
     reqadd X-Forwarded-Proto:\ http
     default_backend www-backend
 
-frontend www-https
+frontend mokuavinnie-tech-frontend
     bind   0.0.0.0:443 ssl crt /etc/haproxy/certs/www.mokuavinnie.tech.pem
     reqadd X-Forwarded-Proto:\ https
     acl    letsencrypt-acl path_beg /.well-known/acme-challenge/
     use_backend letsencrypt-backend if letsencrypt-acl
     default_backend www-backend
 
-backend www-backend
+backend mokuavinnie-tech-backend
     balance  roundrobin
     redirect scheme https if !{ ssl_fc }
-    server 83945-web-01 35.174.213.184:80 check
-    server 83945-web-02 100.25.170.47:80 check
+    server 83945-web-01 52.90.32.220:80 check
+    server 83945-web-02 98.82.13.75:80 check
 
-backend letsencrypt-backend
+backend mokuavinnie-tech-backend
     server letsencrypt 127.0.0.1:54321
