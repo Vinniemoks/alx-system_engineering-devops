@@ -6,12 +6,20 @@
 
 echo -e "Updating and installing Nginx.\n"
 sudo apt-get update -y -qq && \
-	 sudo apt-get install nginx -y
+         sudo apt-get install nginx -y
 
 echo -e "\nSetting up some minor stuff.\n"
 
 # starting nginx service
 sudo service nginx start
+
+# installing ufw
+sudo apt install ufw -y
+sudo ufw enable
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow ssh
+sudo ufw status
 
 # allowing nginx on firewall
 sudo ufw allow 'Nginx HTTP'
@@ -21,10 +29,10 @@ sudo chown -R "$USER":"$USER" /var/www/html
 sudo chmod -R 755 /var/www
 
 # Backup default index
-cp /var/www/html/index.nginx-vinnie.html /var/www/html/index.nginx-vinnie.html.bckp
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
 
 # Creating new index
-echo -e "Hello World!" | dd status=none of=/var/www/html/index.nginx-vinnie.html
+echo -e "Hello World!" | dd status=none of=/var/www/html/index.nginx-debian.html
 
 # Restarting nginx
 sudo service nginx restart
