@@ -40,7 +40,7 @@ frontend mokuavinnie-tech-frontend
         http-request set-header X_Forwarded-Proto http
         default_backend mokuavinnie-tech-backend
 
-frontend mokuavinnie-tech-frontend
+frontend mokuavinnie-tech-https
         bind *:443 ssl crt /etc/haproxy/certs/www.mokuavinnie.tech.pem
         http-request set-header X-Forwarded-Proto https
         default_backend mokuavinnie-tech-backend

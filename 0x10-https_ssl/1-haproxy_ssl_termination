@@ -23,7 +23,7 @@ frontend mokuavinnie-tech-frontend
     reqadd X-Forwarded-Proto:\ http
     default_backend www-backend
 
-frontend mokuavinnie-tech-frontend
+frontend mokuavinnie-tech-https
     bind   0.0.0.0:443 ssl crt /etc/haproxy/certs/www.mokuavinnie.tech.pem
     reqadd X-Forwarded-Proto:\ https
     acl    letsencrypt-acl path_beg /.well-known/acme-challenge/
