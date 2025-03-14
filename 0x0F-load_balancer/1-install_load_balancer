@@ -9,13 +9,13 @@ sudo service haproxy start
 
 echo -e "\n\t>>> Adding the configurations to /etc/haproxy/haproxy.cfg...\n"
 sudo tee /etc/haproxy/haproxy.cfg >> /dev/null << 'EOF'
-frontend mabende-frontend
+frontend mokuavinnie-frontend
     bind *:80
-    default_backend mabende-isad-backend
-backend mabende-isad-backend
+    default_backend mokuavinnie-backend
+backend mokuavinnie-backend
     balance roundrobin
-    server web-01 35.174.213.184:80 check
-    server web-02 100.25.170.47:80 check
+    server web-01 52.90.32.220:80 check
+    server web-02 98.82.13.75:80 check
 EOF
 
 echo -e "\n\t>>> Adding the configurations to /etc/default/haproxy...\n"
