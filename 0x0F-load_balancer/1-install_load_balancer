@@ -1,26 +1,63 @@
 #!/usr/bin/env bash
-# Installing HAProxy
+# install load balancer
 
 
-echo -e "\t>>> Updating sys, installing HAProxy and starting it...\n"
-sudo apt -y  update
-sudo apt -y install haproxy
-sudo service haproxy start
+echo -e "Updating and doing some minor checks...\n"
 
-echo -e "\n\t>>> Adding the configurations to /etc/haproxy/haproxy.cfg...\n"
-sudo tee /etc/haproxy/haproxy.cfg >> /dev/null << 'EOF'
-frontend mokuavinnie-frontend
+function install() {
+	command -v "$1" &> /dev/null
+
+	#shellcheck disable=SC2181
+	if [ $? -ne 0 ]; then
+		echo -e "	Installing: $1\n"
+		sudo apt-get update -y -qq && \
+			sudo apt-get install -y "$1" -qq
+		echo -e "\n"
+	else
+		echo -e "	${1} is already installed.\n"
+	fi
+}
+
+install haproxy #install haproxy
+
+echo -e "\nSetting up some minor stuff.\n"
+
+# backup default server config file
+sudo cp /etc/haproxy/haproxy.cfg haproxy_default.backup
+
+server_config=\
+"
+defaults
+  mode http
+  timeout client 15s
+  timeout connect 10s
+  timeout server 15s
+  timeout http-request 10s
+
+frontend mokuavinnie-tech-frontend
     bind *:80
-    default_backend mokuavinnie-backend
-backend mokuavinnie-backend
+    default_backend mokuavinnie-tech-backend
+
+backend mokuavinnie-tech-backend
     balance roundrobin
-    server web-01 52.90.32.220:80 check
-    server web-02 98.82.13.75:80 check
-EOF
+    server 83945-web-01 52.90.32.220:80 check
+    server 83945-web-02 98.82.13.75:80 check
+"
 
-echo -e "\n\t>>> Adding the configurations to /etc/default/haproxy...\n"
-echo "ENABLED=1" | sudo tee /etc/default/haproxy
+# shellcheck disable=SC2154
+echo "$server_config" | sudo dd status=none of=/etc/haproxy/haproxy.cfg
 
-sudo service haproxy restart
+# enable haproxy to be started by init script
+echo "ENABLED=1" | sudo dd status=none of=/etc/default/haproxy
 
-echo -e "\n\t>>> Completed.\n"
+echo "configured - Roundrobin On web-01 & web-02"
+
+if [ "$(pgrep -c haproxy)" -le 0 ]; then
+	sudo service haproxy start
+else
+	sudo service haproxy restart
+fi
+
+echo -e "web-01 web-02"
+echo "web-01"
+echo "web-02"
